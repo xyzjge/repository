@@ -4,7 +4,7 @@
 
 	<groupId>ar.com.xyz</groupId>
 	<artifactId>game-engine</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>xyz</name>
@@ -13,17 +13,16 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.release>8</maven.compiler.release>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<slf4jVersion>1.6.1</slf4jVersion>
-		<github.maven.repository>file:///home/alfredo/git/repository</github.maven.repository>
+		<github.maven.repository>file:///home/alfredo/git/xyz/repository</github.maven.repository>
 	</properties>
 
-	<!--
 	<scm>
-		<developerConnection>scm:git:file:///home/alfredo/Dropbox/Repositories/xyz-game-engine.git</developerConnection>
+		<developerConnection>scm:git:git@gitlab.com:_xyz_/game-engine.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
-	-->
 
 	<!-- mvn deploy -DskipTests=true -DuniqueVersion=false -->
 	<distributionManagement>
@@ -44,7 +43,7 @@
 			<plugin>
 				<groupId>com.github.wvengen</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
-				<version>2.0.13</version>
+				<version>2.6.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -53,11 +52,13 @@
 				</executions>
 				<configuration>
 					<options>
-						<!-- option>-keep public class * { public protected *;}</option -->
 						<option>-allowaccessmodification</option>
-					</options>
+					</options> 
 					<libs>
+						<!-- 
 						<lib>${java.home}/lib/rt.jar</lib>
+						-->
+						<lib>${java.home}/jmods/</lib>
 					</libs>
 				</configuration>
 			</plugin>
