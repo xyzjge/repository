@@ -1,0 +1,229 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ar.com.xyz</groupId>
+	<artifactId>midi</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.1</version>
+	<name>midi-band</name>
+	<url>http://maven.apache.org</url>
+	
+	<properties>
+		<game-engine-systemPath>/home/alfredo/.m2/repository/ar/com/xyz/game-engine/1.0.4-SNAPSHOT/game-engine-1.0.4-SNAPSHOT.jar</game-engine-systemPath>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<slf4jVersion>1.6.1</slf4jVersion>
+		<library.path>/opt/lwjgl/lwjgl-2.9.1/native/linux</library.path>
+		<github.maven.repository>file:///home/alfredo/git/xyz/repository</github.maven.repository>
+	</properties>
+
+	<scm>
+		<developerConnection>scm:git:git@gitlab.com:_xyz_/midi.git</developerConnection>
+		<tag>midi-1.0.1</tag>
+	</scm>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>github.repo1</id>
+			<url>${github.maven.repository}</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+		<repository>
+			<id>github.repo2</id>
+			<url>${github.maven.repository}</url>
+			<uniqueVersion>false</uniqueVersion>
+			</repository>
+	</distributionManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.wvengen</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.0.13</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals><goal>proguard</goal></goals>
+					</execution>
+				</executions>
+				<configuration>
+					<options>
+						<!-- option>-keep public class * { public protected *;}</option -->
+						<option>-allowaccessmodification</option>
+					</options>
+					<libs>
+						<lib>${java.home}/lib/rt.jar</lib>
+					</libs>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<configuration>
+					<executable>java</executable>
+					<arguments>
+						<argument>-Djava.library.path=${library.path}</argument>
+						<argument>-classpath</argument>
+						<!-- automatically creates the classpath using all project dependencies,
+						also adding the project build directory -->
+						<classpath />
+						<argument>ar.com.xyz.midi.ui.xyz.XYZMidiMainGameLoop</argument>
+					</arguments>
+				</configuration>
+			</plugin>
+			
+			<!-- mvn clean package -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.1.1</version>
+
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>ar.com.xyz.midi.ui.xyz.XYZMidiMainGameLoop</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+    
+			</plugin>
+
+			<!-- Do not generate a source jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<skipSource>true</skipSource>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>ar.com.xyz</groupId>
+			<artifactId>game-engine</artifactId>
+			<version>1.0.4</version>
+			<!-- version>1.0.5-SNAPSHOT</version -->
+			<!-- Descomentar para probar sin acceder al repo (util proguard) 
+			<scope>system</scope>
+			<systemPath>${game-engine-systemPath}</systemPath>
+			-->
+		</dependency>
+		<dependency>
+			<groupId>slick-util</groupId>
+			<artifactId>slick-util</artifactId>
+			<version>239</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl.lwjgl</groupId>
+			<artifactId>lwjgl</artifactId>
+			<version>2.9.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl.lwjgl</groupId>
+			<artifactId>lwjgl_util</artifactId>
+			<version>2.9.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.l33tlabs.twl</groupId>
+			<artifactId>pngdecoder</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+    		<groupId>org.junit.jupiter</groupId>
+    		<artifactId>junit-jupiter-engine</artifactId>
+    		<version>5.9.2</version>
+    		<scope>test</scope>
+		</dependency>
+		
+		<!--Binding for log4j version 1.2.x You also need to place log4j.jar on your class path. -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4jVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency> 
+		<dependency>
+			<groupId>org.jcraft</groupId>
+			<artifactId>jorbis</artifactId>
+			<version>0.0.17</version>
+		</dependency>
+		<!-- Lo tuve que incluir porque estoy levantando XYZ local ... -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.herac.tuxguitar</groupId>
+			<artifactId>tuxguitar-lib</artifactId>
+			<version>1.5.4</version>
+		</dependency>
+		
+		<!--
+		<dependency>
+			<groupId>org.herac.tuxguitar</groupId>
+			<artifactId>tuxguitar-editor-utils</artifactId>
+			<version>SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.herac.tuxguitar</groupId>
+			<artifactId>tuxguitar</artifactId>
+			<version>SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.herac.tuxguitar</groupId>
+			<artifactId>tuxguitar-synth</artifactId>
+			<version>SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.herac.tuxguitar</groupId>
+			<artifactId>tuxguitar-jsa</artifactId>
+			<version>SNAPSHOT</version>
+		</dependency>
+		-->
+	</dependencies>
+	
+	<repositories>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+			<id>xyz.com.ar</id>
+			<url>https://raw.githubusercontent.com/xyzjge/repository/master</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+</project>
